@@ -1,0 +1,52 @@
+---
+- name: delete old .conf
+  command: rm -f ./configs/intended_config_"{{ ansible_host }}".conf
+  ignore_errors: yes
+  no_log: true
+
+- name: create .conf
+  lineinfile:
+    path: ./configs/intended_config_"{{ ansible_host }}".conf
+    line: "{{ item }}"
+    insertbefore: EOF
+    create: yes
+  with_items: "{{ master_config }}"
+  no_log: "{{ no_logging }}"
+
+- name: "03a - SNMP CHECK, COMMIT CHANGES: {{ commit_config | upper }}"
+  napalm_install_config:
+    hostname: "{{ ansible_host }}"
+    username: "{{ ad_username }}"
+    dev_os: "{{ ansible_network_os }}"
+    password: "{{ ad_password }}"
+    timeout: "{{ timeout }}"
+    #config_file: "{{ master_config.splitlines() }}"
+    config_file: ./configs/intended_config_"{{ ansible_host }}".conf
+    commit_changes: "{{ commit_config }}"
+    get_diffs: true
+    optional_args:
+      ignore_warning: True
+   # diff_file: "{{ output_dir }}/{{ inventory_hostname }}/diff_snmp_report.md"
+  register: diff
+
+- name: DEBUG DIFF COMMANDS
+  debug:
+    msg: "{{ diff['msg'].splitlines() }}"
+
+- name: Remove ofuscations from differential output from napalm
+  decrypt_and_clean_diff:
+    diff_config: "{{ diff['msg'] }}"
+    vendor: "{{ vendor }}"
+  register: compliant
+
+- name: see compliance clean results
+  debug:
+    msg: "{{ compliant }}"
+
+- name: set vars for writing NSCDB
+  set_fact:
+    compliance: "{{ compliant['compliance'] }}"
+    compliance_item: "{{ config_block }}"
+    compliance_sub_item: "Config"
+    compliance_type: "Configuration"
+

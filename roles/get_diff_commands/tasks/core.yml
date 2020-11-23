@@ -1,0 +1,12 @@
+---
+- name: "03a - SNMP CHECK, COMMIT CHANGES: {{ commit_config | upper }}"
+  junos_config:
+    update: "replace"
+    src_format: "text"
+    src: "{{ output_dir }}/{{ inventory_hostname }}/snmp.cfg"
+  check_mode: "{{ not commit_config }}"
+  register: "report"
+
+- name: "03b - UPDATE DEV_VAR DICTIONARY"
+  set_fact:
+    dev_vars: "{{ dev_vars|combine({'snmp': not report['changed']}, recursive=True) }}"

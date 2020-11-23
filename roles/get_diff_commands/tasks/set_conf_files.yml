@@ -1,0 +1,27 @@
+---
+- name: delete old existing.conf
+  command: rm -f ./configs/existing_config_"{{ ansible_host }}".conf
+  no_log: True
+
+- name: create .conf for running config
+  lineinfile:
+    path: ./configs/existing_config_"{{ ansible_host }}".conf
+    line: "{{ item }}"
+    insertbefore: EOF
+    create: yes
+  no_log: True
+  with_items: "{{ show_running.stdout[0] }}"
+
+- name: delete old .conf
+  command: rm -f ./configs/intended_config_"{{ ansible_host }}".conf
+  ignore_errors: yes
+  no_log: True
+
+- name: create .conf for intended config
+  lineinfile:
+    path: ./configs/intended_config_"{{ ansible_host }}".conf
+    line: "{{ item }}"
+    insertbefore: EOF
+    create: yes
+  with_items: "{{ intended_config }}"
+  no_log: True

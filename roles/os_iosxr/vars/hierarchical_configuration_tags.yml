@@ -1,0 +1,268 @@
+---
+- lineage:
+  - startswith:
+    - aaa
+    - no aaa group server tacacs
+    - no tacacs-server host
+    - no tacacs server
+    - no tacacs-server key
+    - tacacs-server
+  add_tags: 
+    - aaa_lan_ios_12
+    - aaa_lan_ios_03
+    - aaa_lan_ios_15
+    
+- lineage:
+  - startswith:
+    - aaa group server tacacs
+  - startswith:    
+    - no server-private
+    - server-private
+  add_tags: 
+    - aaa_lan_ios_12
+    - aaa_lan_ios_03
+    - aaa_lan_ios_15
+
+    
+- lineage:  
+  - startswith:
+    - aaa
+    - no aaa group server
+    - no radius-server host
+    - no tacacs-server host
+    - no tacacs-server key
+    - tacacs-server
+    - tacacs server
+    - radius server
+    - device-sensor accounting
+    - ip dhcp snooping vlan 1-4094
+    - no ip dhcp snooping information option
+    - ip dhcp snooping
+    - no ip dhcp bootp ignore
+    - interface 
+    - access-session
+    - epm logging
+    - ip device tracking
+    - service-template 
+    - ip access-list 
+    - ip access-list extended
+    - radius-server
+    - dot1x
+    - class-map type control
+    - policy-map type control subscriber DEVICE_ACCESS_ISE_POLICY
+    - template DEVICE_ACCESS_TEMPLATE
+    - template MULTIAUTH_ACCESS_TEMPLATE
+    - mac address-table notification
+  add_tags: aaa_lan_ios_03.08
+
+- lineage:  
+  - startswith:
+    - aaa
+    - no aaa group server tacacs
+    - no tacacs-server host
+    - no tacacs-server key
+    - tacacs-server
+    - tacacs server
+  add_tags: aaa_lan_ios_16
+
+- lineage:  
+  - startswith:
+    - tacacs-server directed-request
+    - aaa
+    - no aaa group server
+  add_tags: 
+    - aaa_wan_ios_03
+    - aaa_wan_ios_12
+    - aaa_wan_ios_15
+
+- lineage:
+  - startswith:
+    - aaa
+    - no aaa group server tacacs
+    - no tacacs-server host
+    - no tacacs-server key
+    - tacacs-server
+    - tacacs server
+  add_tags: aaa_wan_ios_16
+
+- lineage:
+  - startswith:
+    - ntp authentication-key
+    - ntp authenticate
+    - ntp trusted-key
+    - ntp source
+    - ntp server
+    - no ntp authentication-key
+    - no ntp authenticate
+    - no ntp trusted-key
+    - no ntp source
+    - no ntp server
+# For default commands that have removed from the templates, since they don't appear in the running-config:
+    - no clock summer-time # Equals "remove whichever command specifies a summer-time"
+    - no clock timezone    # Equals "remove whichever timezone that is different to the default one (UTC 0)"
+
+  add_tags: ntp
+  
+- lineage:
+  - startswith:
+    - snmp-server host
+    - snmp-server enable
+    - snmp-server trap-source
+    - snmp-server source-interface
+    - snmp-server community
+    - snmp ifmib
+    - no snmp-server host
+    - no snmp-server enable
+    - no snmp-server trap-source
+    - no snmp-server source-interface
+    - no snmp-server community
+    - no snmp ifmib
+  add_tags: snmp_lan
+
+- lineage:
+  - startswith:
+    - snmp-server host
+    - snmp-server enable
+    - snmp-server trap-source
+    - snmp-server source-interface
+    - snmp-server community
+    - snmp ifmib
+    - no snmp-server host
+    - no snmp-server enable
+    - no snmp-server trap-source
+    - no snmp-server source-interface
+    - no snmp-server community
+    - no snmp ifmib
+  add_tags: snmp_wan
+
+- lineage:
+  - startswith:
+    - logging
+    - no logging
+  add_tags: syslog
+  
+- lineage:
+  - startswith:
+    - hostname
+    - no hostname
+    - enable secret
+    - username
+    - ip domain-list
+    - ip domain-name
+    - ip name-server
+    - ip forward-protocol
+    - ipv6
+    - service
+    - no service pad
+    - no ip finger
+    - no ip igmp snooping 
+    - no ip source-route
+    - no ip bootp server
+    - no ip http server
+    - no ip http secure-server
+    - no ip forward-protocol
+    - ipv6 unicast-routing
+    - ip ssh
+    - crypto key generate
+    - ip ftp source-interface
+    - ip tftp source-interface
+    - banner
+    #- no banner
+    - ip access-list
+    #- line
+    - no line 
+    # no ip access-list
+  add_tags: system_wan
+  
+- lineage:
+  - startswith:
+    - service
+    - no service pad
+    - no ip http server
+    - no ip http secure-server
+    - no ip source-route
+    - no ip igmp
+    - no ip finger
+    - hostname
+    - username
+    - enable secret
+    - ip domain-list
+    - ip domain-name
+    - ip name-server
+    - lldp run 
+    - cdp run
+    - ip ssh
+    - ip ftp source-interface
+    - ip tftp source-interface
+    - crypto key generate
+    - udld
+    - mac address-table notification
+    - ip access-list
+    - errdisable recovery
+    - banner
+    - exec-timeout
+    - transport
+    - no ip routing
+    - ip default-gateway
+  add_tags: system_lan
+  
+- lineage:
+  - startswith:
+    - service
+    - no service pad
+    - no ip http server
+    - no ip http secure-server
+    - no ip source-route
+    - no ip igmp
+    - no ip finger
+    - hostname
+    - username
+    - enable secret
+    - ip domain-list
+    - ip domain-name
+    - ip name-server
+    - ip subnet-zero
+    - lldp run 
+    - cdp run
+    - ip ssh
+    - ip ftp source-interface
+    - ip tftp source-interface
+    - crypto key generate
+    - ipv6
+    - udld
+    - mac-address-table aging-time
+    - sdm prefer
+    - ip dhcp 
+    - mac address-table notification
+    - boot system flash
+    - ip access-list
+    - errdisable recovery
+    - banner
+    - exec-timeout
+    - transport
+    - stopbits
+    - login
+    - Password
+    - no ip routing
+    - ip default-gateway
+  add_tags: system_lan_cco_ios
+
+- lineage:
+  - startswith:
+    - line 
+  - startswith:    
+    - transport 
+    - privilege
+    - exec-timeout
+  add_tags:
+    - system_wan
+    - system_lan
+    - system_lan_cco_ios
+  
+  
+  
+  
+  
+  
+  
+ 

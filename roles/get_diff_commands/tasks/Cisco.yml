@@ -1,0 +1,59 @@
+---
+- name: define .conf files
+  include_tasks: set_conf_files.yml
+
+- name: BUILD REMEDIATION CONFIG WITH TAGS
+  hconfig_remediation:
+    hostname: "{{ inventory_hostname }}"
+    running_config: ./configs/existing_config_"{{ ansible_host }}".conf
+    compiled_config: ./configs/intended_config_"{{ ansible_host }}".conf
+    remediation_config: ./configs/ios-remediation-withtags-"{{ ansible_host }}".conf
+    os_role: os_iosxr
+    include_tags: "{{ block }}"
+  register: remediation
+
+- name: Show diff from hier config
+  debug:
+    msg: "{{ remediation['response'].splitlines() }}"
+
+- name: Remove ofuscations from differential output from hier config
+  decrypt_and_clean_diff:
+    diff_config: "{{ remediation['response'] }}"
+    vendor: "{{ vendor }}"
+  register: compliant
+
+- name: see clean compliance results
+  debug:
+    msg: "{{ compliant['compliance'] }}"
+
+- name: set vars for writing NSCDB
+  set_fact:
+    compliance: "{{ compliant['compliance'] }}"
+    compliance_item: "{{ config_block }}"
+    compliance_sub_item: "Config"
+    compliance_type: "Configuration"
+
+#- name: BUILD REMEDIATION CONFIG WITHOUT TAGS
+#  hconfig_remediation:
+#    hostname: "{{ inventory_hostname }}"
+#    running_config: "{{ existing_configuration }}"
+#    running_config: ./configs/existing_config_"{{ ansible_host }}".conf
+#    compiled_config: "{{ intended_configuration }}"
+#    compiled_config: ./configs/intended_config_"{{ ansible_host }}".conf
+#    remediation_config: ./configs/ios-remediation-withouttags-"{{ ansible_host }}".conf
+#    os_role: os_iosxr
+#  register: remediation2
+
+- name: delete old remediation.conf for report
+  command: "rm -f ./configs_history/{{ config_block }}/{{ inventory_hostname }}_remediation_config.conf"
+  no_log: True
+
+- name: create .conf for remediation config report
+  lineinfile:
+    path: "./configs_history/{{ config_block }}/{{ inventory_hostname }}_remediation_config.conf"
+    line: "{{ item }}"
+    insertbefore: EOF
+    create: yes
+  no_log: True
+  with_items: "{{ remediation['response'] }}"
+

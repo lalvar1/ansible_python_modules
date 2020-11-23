@@ -1,0 +1,3 @@
+---
+- name: "Use {{ vendor | upper }} as vendor for {{ inventory_hostname | upper }}"
+  include_tasks: "{{ vendor }}.yml"

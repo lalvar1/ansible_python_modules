@@ -1,0 +1,3 @@
+commit_config: false
+commit_config_type: "napalm" # core | napalm
+ansible_network_os: junos
